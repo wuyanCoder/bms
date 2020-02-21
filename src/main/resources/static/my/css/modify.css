@@ -1,0 +1,22 @@
+body .aux-self {
+    padding: 20px;
+}
+
+body .aux-self .layui-input-block {
+    float: left;
+    margin-left: 0;
+}
+
+body .aux-self .layui-form-label {
+    width: 90px;
+}
+
+.aux-self-word {
+    padding: 8px 10px;
+    float: left;
+    margin-left: 20px;
+    border: 1px solid #e6e6e6;
+    width: 220px;
+    color: #ff1010;
+    display: none;
+}

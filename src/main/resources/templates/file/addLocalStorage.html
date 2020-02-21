@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新增信息</title>
+    <header th:replace="header::html"></header>
+</head>
+<body>
+<div class="x-body">
+
+    <form class="layui-form">
+
+        <input id='hiddenId' type='hidden' th:value='${localStorage.id}' name='id'/>
+        <div class="layui-form-item">
+            <label for="L_name" class="layui-form-label">
+                <span class="x-red">*</span>名称
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="L_name" th:value="${localStorage.name}" name="nickname" required=""
+                       lay-verify="nickname" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-upload">
+            <label class="layui-form-label">
+                <span class="x-red">*</span>上传
+            </label>
+            <div class="layui-input-inline">
+                <button type="button" class="layui-btn layui-btn-normal" id="test8">选择文件</button>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+            </label>
+            <button type="button" class="layui-btn" id="test9">开始上传</button>
+        </div>
+
+    </form>
+</div>
+<script type="text/javascript">
+    layui.use(['form', 'layer','upload'], function () {
+        $ = layui.jquery;
+        var form = layui.form
+            , layer = layui.layer
+            , upload = layui.upload
+
+        //选完文件后不自动上传
+        upload.render({
+            elem: '#test8'
+            ,url: '/localStorages/upload' //改成您自己的上传接口
+            ,auto: false
+            ,accept:"file"
+            ,size: 50*1024
+            //,multiple: true
+            ,bindAction: '#test9'
+            ,before: function(obj){
+                layer.load(); //上传loading
+                this.data={'name':$("#L_name").val()};
+            }
+            ,done: function(result){
+                if (result.code == 200) {
+                    layer.alert("设置成功", {icon: 6}, function () {
+                        //关闭当前frame
+                        xadmin.close();
+                        // 可以对父窗口进行刷新
+                        xadmin.father_reload();
+                    });
+                } else {
+                    layer.alert(result.msg);
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(add)', function (data) {
+            $.ajax({
+                url: "/localStorages/add",
+                type: "POST",
+                data: data.field,
+                dataType: 'json',
+                success: function (result) {
+                    if (result.code == 500 || result.code == 5000100 || result.code == 5000101 || result.code == 5000102) {
+                        layer.alert(result.msg);
+                    } else {
+                        layer.alert("设置成功", {icon: 6}, function () {
+                            x_admin_close();
+                            x_admin_father_reload();
+                        });
+                    }
+                }
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>
